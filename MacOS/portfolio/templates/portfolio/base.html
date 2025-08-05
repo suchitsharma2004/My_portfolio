@@ -88,7 +88,10 @@
         month: 'short', 
         day: 'numeric' 
       });
-      document.querySelector('.right-status').innerHTML = `📶 🔋 ${date} ${time}`;
+      const timeDisplay = document.querySelector('.time-display');
+      if (timeDisplay) {
+        timeDisplay.textContent = `${date} ${time}`;
+      }
     }
     setInterval(updateTime, 1000);
 
@@ -108,55 +111,77 @@
     <!-- Apple Menu in Corner -->
     <div class="system-menu">
       <button class="menu-button" onclick="toggleSystemMenu()">
-        <img src="{% static 'portfolio/images/icons/apple/apple-logo-white.png' %}" 
+        <img src="{% static 'portfolio/images/icons/apple/new-apple.png' %}" 
              alt="Apple" 
-             class="apple-logo apple-logo-light"
-             onerror="this.style.display='none'; this.nextElementSibling.nextElementSibling.style.display='inline';">
-        <img src="{% static 'portfolio/images/icons/apple/apple-logo-black.png' %}" 
-             alt="Apple" 
-             class="apple-logo apple-logo-dark" style="display: none;"
+             class="apple-logo"
              onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
         <span style="display: none;">🍎</span>
       </button>
       <div class="menu-dropdown" id="systemMenu">
         <div class="menu-item" onclick="openAboutWindow()">
-          <span>ℹ️</span>
+          <img src="{% static 'portfolio/images/icons/system/info.svg' %}" 
+               alt="Info" 
+               class="menu-icon-svg"
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+          <span class="menu-icon" style="display: none;">ℹ️</span>
           <span>About This Mac</span>
         </div>
         <div class="menu-item separator"></div>
-        <div class="menu-item" onclick="themeManager.toggle()">
-          <span>🌓</span>
-          <span>Toggle Dark Mode</span>
-        </div>
         <div class="menu-item" onclick="changeWallpaper()">
-          <span>🖼️</span>
+          <img src="{% static 'portfolio/images/icons/system/wallpaper.svg' %}" 
+               alt="Wallpaper" 
+               class="menu-icon-svg"
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+          <span class="menu-icon" style="display: none;">🖼️</span>
           <span>Change Wallpaper</span>
         </div>
         <div class="menu-item" onclick="showSystemPreferences()">
-          <span>⚙️</span>
+          <img src="{% static 'portfolio/images/icons/system/settings.svg' %}" 
+               alt="Settings" 
+               class="menu-icon-svg"
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+          <span class="menu-icon" style="display: none;">⚙️</span>
           <span>System Preferences</span>
         </div>
         <div class="menu-item separator"></div>
         <div class="menu-item" onclick="closeAllWindows()">
-          <span>❌</span>
+          <img src="{% static 'portfolio/images/icons/system/close.svg' %}" 
+               alt="Close" 
+               class="menu-icon-svg"
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+          <span class="menu-icon" style="display: none;">❌</span>
           <span>Close All Windows</span>
         </div>
         <div class="menu-item" onclick="showAllWindows()">
-          <span>📱</span>
+          <img src="{% static 'portfolio/images/icons/system/windows.svg' %}" 
+               alt="Windows" 
+               class="menu-icon-svg"
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+          <span class="menu-icon" style="display: none;">📱</span>
           <span>Show All Windows</span>
         </div>
       </div>
     </div>
     
     <div class="center-title">Suchit's macOS Desktop</div>
-    <div class="right-status" style="margin-right: 20px;">📶 🔋 20:45</div>
-  </div>
-        </div>
-      </div>
+    <div class="right-status">
+      <img src="{% static 'portfolio/images/icons/apple/control-centre.png' %}" 
+           alt="Control Center" 
+           class="status-icon control-center-btn"
+           onclick="themeManager.toggle()"
+           title="Control Center - Toggle Theme"
+           onerror="this.style.display='none';">
+      <img src="{% static 'portfolio/images/icons/apple/wifi-logo-white.svg' %}" 
+           alt="WiFi" 
+           class="status-icon"
+           onerror="this.style.display='none';">
+      <img src="{% static 'portfolio/images/icons/apple/battery-white.svg' %}" 
+           alt="Battery" 
+           class="status-icon"
+           onerror="this.style.display='none';">
+      <span class="battery-fallback" style="display: none;">🔋</span>
+      <span class="time-display">20:45</span>
     </div>
-    
-    <div class="center-title">Suchit's macOS Desktop</div>
-    <div class="right-status">📶 🔋 20:45</div>
   </div>
 
   <!-- Desktop Area -->
@@ -169,7 +194,7 @@
   <!-- macOS Dock -->
   <div class="dock">
     <div class="dock-item" data-app="finder" onclick="openApp('finder')" title="Finder">
-      <img src="{% static 'portfolio/images/icons/apps/home.png' %}" 
+      <img src="{% static 'portfolio/images/icons/apps/finder.png' %}" 
            alt="Finder" 
            class="dock-icon"
            onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
@@ -197,7 +222,7 @@
       <span class="emoji-fallback" style="display: none;">💼</span>
     </div>
     <div class="dock-item" data-app="contact" onclick="openApp('contact')" title="Contact">
-      <img src="{% static 'portfolio/images/icons/apps/contact.png' %}" 
+      <img src="{% static 'portfolio/images/icons/apps/contact.svg' %}" 
            alt="Contact" 
            class="dock-icon"
            onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
@@ -224,8 +249,10 @@
     class DesktopManager {
       constructor() {
         this.openWindows = {};
-        this.minimizedWindows = [];
         this.windowCounter = 0;
+        this.zIndexCounter = 1000;
+        this.dragData = { isDragging: false, startX: 0, startY: 0, startLeft: 0, startTop: 0 };
+        this.animationFrame = null;
         this.init();
       }
 
@@ -244,11 +271,47 @@
           }
         });
 
-        // Minimized window previews
-        document.addEventListener('click', (e) => {
-          if (e.target.classList.contains('minimized-window-preview')) {
-            this.restoreWindow(e.target.dataset.windowId);
+        // Window header double-tap to maximize
+        document.addEventListener('dblclick', (e) => {
+          if (e.target.closest('.window-header')) {
+            const window = e.target.closest('.mac-window');
+            this.toggleMaximizeWindow(window);
+            e.preventDefault();
           }
+        });
+
+        // Bring window to front when clicked
+        document.addEventListener('mousedown', (e) => {
+          const window = e.target.closest('.mac-window');
+          if (window) {
+            this.bringToFront(window);
+            
+            // Start dragging if clicking on window header (but not on control buttons)
+            if (e.target.closest('.window-header') && !e.target.closest('.control-button') && !window.classList.contains('maximized')) {
+              this.startDrag(e, window);
+            }
+          }
+        });
+
+        // Handle drag movement
+        document.addEventListener('mousemove', (e) => {
+          if (this.dragData.isDragging) {
+            e.preventDefault();
+            
+            // Use requestAnimationFrame for smooth dragging
+            if (this.animationFrame) {
+              cancelAnimationFrame(this.animationFrame);
+            }
+            
+            this.animationFrame = requestAnimationFrame(() => {
+              this.handleDrag(e);
+            });
+          }
+        });
+
+        // End dragging
+        document.addEventListener('mouseup', () => {
+          this.endDrag();
         });
 
         // Close menu when clicking outside
@@ -261,9 +324,18 @@
 
       getButtonType(button) {
         if (button.classList.contains('close')) return 'close';
-        if (button.classList.contains('minimize')) return 'minimize';
         if (button.classList.contains('maximize')) return 'maximize';
         return null;
+      }
+
+      bringToFront(window) {
+        this.zIndexCounter++;
+        window.style.zIndex = this.zIndexCounter;
+        
+        // Remove active class from all windows
+        document.querySelectorAll('.mac-window').forEach(w => w.classList.remove('active'));
+        // Add active class to current window
+        window.classList.add('active');
       }
 
       handleWindowControl(window, action) {
@@ -273,9 +345,6 @@
         switch (action) {
           case 'close':
             this.closeWindow(window, windowId);
-            break;
-          case 'minimize':
-            this.minimizeWindow(window, windowId);
             break;
           case 'maximize':
             this.toggleMaximizeWindow(window);
@@ -293,12 +362,6 @@
         }, 300);
       }
 
-      minimizeWindow(window, windowId) {
-        const windowTitle = window.querySelector('.window-title').textContent;
-        window.classList.add('minimized');
-        this.createMinimizedPreview(windowId, windowTitle, window);
-      }
-
       toggleMaximizeWindow(window) {
         if (window.classList.contains('maximized')) {
           window.classList.remove('maximized');
@@ -307,48 +370,96 @@
           window.classList.add('maximized');
           this.showNotification('Window maximized', '');
         }
+        this.bringToFront(window);
       }
 
-      createMinimizedPreview(windowId, title, windowElement) {
-        const existingPreview = document.querySelector(`[data-window-id="${windowId}"]`);
-        if (existingPreview) existingPreview.remove();
-
-        let container = document.querySelector('.dock-minimized-windows');
-        if (!container) {
-          container = document.createElement('div');
-          container.className = 'dock-minimized-windows';
-          document.body.appendChild(container);
-        }
-
-        const preview = document.createElement('div');
-        preview.className = 'minimized-window-preview';
-        preview.dataset.windowId = windowId;
-        preview.textContent = title;
-        preview.title = `Click to restore ${title}`;
+      // Drag functionality methods
+      startDrag(e, window) {
+        e.preventDefault();
+        this.dragData.isDragging = true;
+        this.dragData.draggedWindow = window;
+        this.dragData.startX = e.clientX;
+        this.dragData.startY = e.clientY;
         
-        container.appendChild(preview);
-        this.minimizedWindows.push({ id: windowId, element: windowElement });
+        // Get current window position - handle both positioned and transformed windows
+        const computedStyle = getComputedStyle(window);
+        const transform = computedStyle.transform;
+        
+        if (transform && transform !== 'none') {
+          // Window is using transform, extract translate values
+          const matrix = new DOMMatrix(transform);
+          this.dragData.startLeft = matrix.e || 0;
+          this.dragData.startTop = matrix.f || 0;
+        } else {
+          // Window is using left/top positioning
+          const rect = window.getBoundingClientRect();
+          this.dragData.startLeft = rect.left;
+          this.dragData.startTop = rect.top;
+        }
+        
+        // Reset any existing transform to avoid conflicts
+        window.style.left = '';
+        window.style.top = '';
+        
+        // Add dragging class for visual feedback
+        window.classList.add('dragging');
+        document.body.style.cursor = 'move';
+        document.body.style.userSelect = 'none';
       }
 
-      restoreWindow(windowId) {
-        const windowData = this.minimizedWindows.find(w => w.id === windowId);
-        if (windowData) {
-          windowData.element.classList.remove('minimized');
-          const preview = document.querySelector(`[data-window-id="${windowId}"]`);
-          if (preview) preview.remove();
-          this.minimizedWindows = this.minimizedWindows.filter(w => w.id !== windowId);
+      handleDrag(e) {
+        if (!this.dragData.isDragging || !this.dragData.draggedWindow) return;
+        
+        // Calculate new position
+        const deltaX = e.clientX - this.dragData.startX;
+        const deltaY = e.clientY - this.dragData.startY;
+        
+        const newLeft = this.dragData.startLeft + deltaX;
+        const newTop = this.dragData.startTop + deltaY;
+        
+        // Constrain to viewport (prevent dragging completely off screen)
+        const windowWidth = this.dragData.draggedWindow.offsetWidth;
+        const windowHeight = this.dragData.draggedWindow.offsetHeight;
+        const maxLeft = window.innerWidth - 100; // Keep at least 100px visible
+        const maxTop = window.innerHeight - 50; // Keep at least 50px visible
+        const minLeft = -windowWidth + 100;
+        const minTop = 32; // Below top bar
+        
+        const constrainedLeft = Math.max(minLeft, Math.min(maxLeft, newLeft));
+        const constrainedTop = Math.max(minTop, Math.min(maxTop, newTop));
+        
+        // Use transform instead of left/top for better performance
+        this.dragData.draggedWindow.style.transform = `translate(${constrainedLeft}px, ${constrainedTop}px)`;
+      }
+
+      endDrag() {
+        if (this.dragData.isDragging && this.dragData.draggedWindow) {
+          this.dragData.draggedWindow.classList.remove('dragging');
         }
+        
+        // Cancel any pending animation frame
+        if (this.animationFrame) {
+          cancelAnimationFrame(this.animationFrame);
+          this.animationFrame = null;
+        }
+        
+        this.dragData.isDragging = false;
+        this.dragData.draggedWindow = null;
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
       }
 
       createWindow(appName, title, content) {
         const windowId = `window-${++this.windowCounter}`;
         
+        // Calculate offset for stacking windows
+        const offset = (this.windowCounter - 1) * 30;
+        
         const windowHTML = `
-          <div class="mac-window" data-window-id="${windowId}" data-app="${appName}">
+          <div class="mac-window" data-window-id="${windowId}" data-app="${appName}" style="top: ${60 + offset}px; left: ${100 + offset}px;">
             <div class="window-header">
               <div class="window-controls">
                 <div class="control-button close"></div>
-                <div class="control-button minimize"></div>
                 <div class="control-button maximize"></div>
               </div>
               <div class="window-title">${title}</div>
@@ -363,8 +474,14 @@
         desktop.insertAdjacentHTML('beforeend', windowHTML);
         
         const newWindow = desktop.lastElementChild;
+        
+        // Store reference to this for use in setTimeout
+        const self = this;
+        
+        // Show window first, then bring to front
         setTimeout(() => {
           newWindow.classList.add('show');
+          self.bringToFront(newWindow);
         }, 100);
 
         this.openWindows[windowId] = { app: appName, element: newWindow };
@@ -419,15 +536,18 @@
       finder: {
         title: 'Finder',
         content: `
-          <h4>📁 File Browser</h4>
+          <div class="app-header">
+            <img src="{% static 'portfolio/images/icons/apps/home.svg' %}" alt="Finder" class="app-icon"> 
+            <h4>File Browser</h4>
+          </div>
           <p>Welcome to the file system browser. Here you can navigate through your portfolio files.</p>
           <div class="mb-3">
             <strong>Quick Access:</strong>
-            <ul>
-              <li>📄 Documents</li>
-              <li>🖼️ Images</li>
-              <li>💼 Projects</li>
-              <li>📧 Contact Info</li>
+            <ul class="file-list">
+              <li><img src="{% static 'portfolio/images/icons/system/info.svg' %}" class="inline-icon"> Documents</li>
+              <li><img src="{% static 'portfolio/images/icons/system/wallpaper.svg' %}" class="inline-icon"> Images</li>
+              <li><img src="{% static 'portfolio/images/icons/apps/projects.svg' %}" class="inline-icon"> Projects</li>
+              <li><img src="{% static 'portfolio/images/icons/apps/contact.svg' %}" class="inline-icon"> Contact Info</li>
             </ul>
           </div>
         `
@@ -436,7 +556,9 @@
         title: 'Portfolio Home',
         content: `
           <div class="profile-section">
-            <div class="profile-image">🚀</div>
+            <div class="profile-image">
+              <img src="{% static 'portfolio/images/icons/apps/home.svg' %}" alt="Profile" class="profile-avatar">
+            </div>
             <h1 class="profile-name">Suchit Sharma</h1>
             <p class="profile-title">Full Stack Developer & Tech Enthusiast</p>
             <p>Welcome to my digital workspace. I create innovative solutions and bring ideas to life through code.</p>
@@ -444,28 +566,36 @@
           <div class="row text-center">
             <div class="col-md-3 mb-3">
               <div class="skill-card">
-                <div class="skill-icon">💻</div>
+                <div class="skill-icon">
+                  <img src="{% static 'portfolio/images/icons/apps/home.svg' %}" alt="Frontend" class="skill-svg">
+                </div>
                 <h5>Frontend</h5>
                 <p class="text-muted small">React, Vue, HTML/CSS</p>
               </div>
             </div>
             <div class="col-md-3 mb-3">
               <div class="skill-card">
-                <div class="skill-icon">⚙️</div>
+                <div class="skill-icon">
+                  <img src="{% static 'portfolio/images/icons/system/settings.svg' %}" alt="Backend" class="skill-svg">
+                </div>
                 <h5>Backend</h5>
                 <p class="text-muted small">Django, Node.js, Python</p>
               </div>
             </div>
             <div class="col-md-3 mb-3">
               <div class="skill-card">
-                <div class="skill-icon">📱</div>
+                <div class="skill-icon">
+                  <img src="{% static 'portfolio/images/icons/apps/contact.svg' %}" alt="Mobile" class="skill-svg">
+                </div>
                 <h5>Mobile</h5>
                 <p class="text-muted small">React Native, Flutter</p>
               </div>
             </div>
             <div class="col-md-3 mb-3">
               <div class="skill-card">
-                <div class="skill-icon">☁️</div>
+                <div class="skill-icon">
+                  <img src="{% static 'portfolio/images/icons/system/windows.svg' %}" alt="Cloud" class="skill-svg">
+                </div>
                 <h5>Cloud</h5>
                 <p class="text-muted small">AWS, Docker, DevOps</p>
               </div>
@@ -478,19 +608,24 @@
         content: `
           <div class="row">
             <div class="col-md-4 text-center mb-4">
-              <div class="profile-image">👨‍💻</div>
+              <div class="profile-image">
+                <img src="{% static 'portfolio/images/icons/apps/about.svg' %}" alt="About" class="profile-avatar">
+              </div>
               <h3 class="mt-3">Suchit Sharma</h3>
               <p class="text-muted">Full Stack Developer</p>
             </div>
             <div class="col-md-8">
-              <h4>👋 Hello, I'm Suchit!</h4>
+              <div class="app-header">
+                <img src="{% static 'portfolio/images/icons/apps/about.svg' %}" alt="About" class="app-icon">
+                <h4>Hello, I'm Suchit!</h4>
+              </div>
               <p>I'm a passionate full-stack developer with a love for creating innovative web applications.</p>
-              <h5 class="mt-4">🎯 What I Do</h5>
-              <ul>
-                <li>Build responsive web applications</li>
-                <li>Develop mobile apps</li>
-                <li>Design scalable backend systems</li>
-                <li>Create intuitive user interfaces</li>
+              <h5 class="mt-4">What I Do</h5>
+              <ul class="feature-list">
+                <li><img src="{% static 'portfolio/images/icons/apps/home.svg' %}" class="inline-icon"> Build responsive web applications</li>
+                <li><img src="{% static 'portfolio/images/icons/apps/contact.svg' %}" class="inline-icon"> Develop mobile apps</li>
+                <li><img src="{% static 'portfolio/images/icons/system/settings.svg' %}" class="inline-icon"> Design scalable backend systems</li>
+                <li><img src="{% static 'portfolio/images/icons/apps/projects.svg' %}" class="inline-icon"> Create intuitive user interfaces</li>
               </ul>
             </div>
           </div>
@@ -499,18 +634,25 @@
       projects: {
         title: 'My Projects',
         content: `
-          <h4>🚀 Featured Projects</h4>
+          <div class="app-header">
+            <img src="{% static 'portfolio/images/icons/apps/projects.svg' %}" alt="Projects" class="app-icon">
+            <h4>Featured Projects</h4>
+          </div>
           <div class="row">
             <div class="col-md-6 mb-4">
               <div class="skill-card">
-                <div class="skill-icon">🛒</div>
+                <div class="skill-icon">
+                  <img src="{% static 'portfolio/images/icons/apps/projects.svg' %}" alt="E-Commerce" class="skill-svg">
+                </div>
                 <h5>E-Commerce Platform</h5>
                 <p class="text-muted small">Full-stack solution with React and Django</p>
               </div>
             </div>
             <div class="col-md-6 mb-4">
               <div class="skill-card">
-                <div class="skill-icon">📱</div>
+                <div class="skill-icon">
+                  <img src="{% static 'portfolio/images/icons/apps/contact.svg' %}" alt="Task Manager" class="skill-svg">
+                </div>
                 <h5>Task Manager App</h5>
                 <p class="text-muted small">Mobile-first task management</p>
               </div>
@@ -521,15 +663,22 @@
       contact: {
         title: 'Contact Me',
         content: `
-          <h4>📬 Get In Touch</h4>
+          <div class="app-header">
+            <img src="{% static 'portfolio/images/icons/apps/contact.svg' %}" alt="Contact" class="app-icon">
+            <h4>Get In Touch</h4>
+          </div>
           <div class="row">
             <div class="col-md-6">
               <p>I'm always open to discussing new opportunities!</p>
-              <div class="mb-3">
-                <strong>📧 Email:</strong> suchit.sharma@example.com
-              </div>
-              <div class="mb-3">
-                <strong>📱 Phone:</strong> +91 98765 43210
+              <div class="contact-info">
+                <div class="contact-item">
+                  <img src="{% static 'portfolio/images/icons/apps/contact.svg' %}" alt="Email" class="inline-icon">
+                  <strong>Email:</strong> suchit.sharma@example.com
+                </div>
+                <div class="contact-item">
+                  <img src="{% static 'portfolio/images/icons/apps/contact.svg' %}" alt="Phone" class="inline-icon">
+                  <strong>Phone:</strong> +91 98765 43210
+                </div>
               </div>
             </div>
             <div class="col-md-6">
@@ -558,6 +707,13 @@
             <br>
             <div style="color: #fff;">Welcome to Suchit's Portfolio Terminal!</div>
             <div style="color: #ccc;">Type 'help' for available commands</div>
+            <br>
+            <div style="color: #fff;">Available commands:</div>
+            <div style="color: #ccc;">  help     - Show this help message</div>
+            <div style="color: #ccc;">  about    - Display information about me</div>
+            <div style="color: #ccc;">  skills   - List my technical skills</div>
+            <div style="color: #ccc;">  projects - Show my featured projects</div>
+            <div style="color: #ccc;">  clear    - Clear the terminal</div>
           </div>
           <style>
             @keyframes blink { 50% { opacity: 0; } }
@@ -619,7 +775,7 @@
         <div class="row">
           <div class="col-md-6">
             <h6>🎨 Appearance</h6>
-            <button class="btn btn-outline-primary btn-sm mb-2 w-100" onclick="themeManager.toggle(); updateThemeDisplay()">Toggle Theme</button>
+            <p class="small text-muted">Use Control Center (top-right) to toggle theme</p>
             <button class="btn btn-outline-secondary btn-sm mb-2 w-100" onclick="changeWallpaper()">Next Wallpaper</button>
             
             <h6 class="mt-3">🖼️ Available Wallpapers</h6>
@@ -669,10 +825,16 @@
     }
 
     function showAllWindows() {
-      const windows = document.querySelectorAll('.mac-window.minimized');
-      windows.forEach(window => {
-        const windowId = window.dataset.windowId;
-        window.desktopManager.restoreWindow(windowId);
+      // Bring all windows to view and arrange them
+      const windows = document.querySelectorAll('.mac-window:not(.closed)');
+      windows.forEach((windowElement, index) => {
+        windowElement.style.display = 'block';
+        windowElement.classList.remove('maximized');
+        // Arrange windows in a cascade
+        const offset = index * 40;
+        windowElement.style.top = `${80 + offset}px`;
+        windowElement.style.left = `${120 + offset}px`;
+        window.desktopManager.bringToFront(windowElement);
       });
       document.getElementById('systemMenu').classList.remove('show');
     }
