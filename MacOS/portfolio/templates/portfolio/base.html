@@ -207,13 +207,6 @@
            onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
       <span class="emoji-fallback" style="display: none;">🏠</span>
     </div>
-    <div class="dock-item" data-app="about" onclick="openApp('about')" title="About Me">
-      <img src="{% static 'portfolio/images/icons/apps/about.png' %}" 
-           alt="About" 
-           class="dock-icon"
-           onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-      <span class="emoji-fallback" style="display: none;">👨‍💻</span>
-    </div>
     <div class="dock-item" data-app="projects" onclick="openApp('projects')" title="My Projects">
       <img src="{% static 'portfolio/images/icons/apps/projects.png' %}" 
            alt="Projects" 
@@ -449,6 +442,16 @@
         document.body.style.userSelect = '';
       }
 
+      // Method to open apps from Finder or other sources
+      openApp(appName) {
+        if (apps[appName]) {
+          this.createWindow(appName, apps[appName].title, apps[appName].content);
+          this.showNotification(`${apps[appName].title} opened`, '');
+        } else {
+          this.showNotification('App not found', `Cannot open ${appName}`);
+        }
+      }
+
       createWindow(appName, title, content) {
         const windowId = `window-${++this.windowCounter}`;
         
@@ -536,68 +539,123 @@
       finder: {
         title: 'Finder',
         content: `
-          <div class="app-header">
-            <img src="{% static 'portfolio/images/icons/apps/home.svg' %}" alt="Finder" class="app-icon"> 
-            <h4>File Browser</h4>
-          </div>
-          <p>Welcome to the file system browser. Here you can navigate through your portfolio files.</p>
-          <div class="mb-3">
-            <strong>Quick Access:</strong>
-            <ul class="file-list">
-              <li><img src="{% static 'portfolio/images/icons/system/info.svg' %}" class="inline-icon"> Documents</li>
-              <li><img src="{% static 'portfolio/images/icons/system/wallpaper.svg' %}" class="inline-icon"> Images</li>
-              <li><img src="{% static 'portfolio/images/icons/apps/projects.svg' %}" class="inline-icon"> Projects</li>
-              <li><img src="{% static 'portfolio/images/icons/apps/contact.svg' %}" class="inline-icon"> Contact Info</li>
-            </ul>
+          <div class="finder-simple">
+            <div class="finder-header">
+              <img src="{% static 'portfolio/images/icons/apps/finder.png' %}" alt="Finder" class="app-icon"> 
+              <h4>Portfolio Files</h4>
+            </div>
+            
+            <div class="finder-grid">
+              <div class="finder-item" onclick="window.desktopManager.openApp('home')">
+                <img src="{% static 'portfolio/images/icons/apps/home.svg' %}" class="finder-file-icon">
+                <div class="finder-file-name">Portfolio Home</div>
+                <div class="finder-file-type">Application</div>
+              </div>
+              
+              <div class="finder-item" onclick="window.desktopManager.openApp('about')">
+                <img src="{% static 'portfolio/images/icons/apps/about.svg' %}" class="finder-file-icon">
+                <div class="finder-file-name">About Me</div>
+                <div class="finder-file-type">Document</div>
+              </div>
+              
+              <div class="finder-item" onclick="window.desktopManager.openApp('projects')">
+                <img src="{% static 'portfolio/images/icons/apps/projects.svg' %}" class="finder-file-icon">
+                <div class="finder-file-name">My Projects</div>
+                <div class="finder-file-type">Folder</div>
+              </div>
+              
+              <div class="finder-item" onclick="window.desktopManager.openApp('contact')">
+                <img src="{% static 'portfolio/images/icons/apps/contact.svg' %}" class="finder-file-icon">
+                <div class="finder-file-name">Contact Me</div>
+                <div class="finder-file-type">Document</div>
+              </div>
+              
+              <div class="finder-item" onclick="window.open('https://github.com/suchitsharma2004', '_blank')">
+                <img src="{% static 'portfolio/images/icons/apps/projects.svg' %}" class="finder-file-icon">
+                <div class="finder-file-name">GitHub</div>
+                <div class="finder-file-type">Web Link</div>
+              </div>
+              
+              <div class="finder-item" onclick="window.open('https://www.linkedin.com/in/suchit-sharma2004/', '_blank')">
+                <img src="{% static 'portfolio/images/icons/apps/contact.svg' %}" class="finder-file-icon">
+                <div class="finder-file-name">LinkedIn</div>
+                <div class="finder-file-type">Web Link</div>
+              </div>
+            </div>
+            
+            <div class="finder-status">
+              6 items
+            </div>
           </div>
         `
       },
       home: {
         title: 'Portfolio Home',
         content: `
-          <div class="profile-section">
-            <div class="profile-image">
-              <img src="{% static 'portfolio/images/icons/apps/home.svg' %}" alt="Profile" class="profile-avatar">
-            </div>
-            <h1 class="profile-name">Suchit Sharma</h1>
-            <p class="profile-title">Full Stack Developer & Tech Enthusiast</p>
-            <p>Welcome to my digital workspace. I create innovative solutions and bring ideas to life through code.</p>
-          </div>
-          <div class="row text-center">
-            <div class="col-md-3 mb-3">
-              <div class="skill-card">
-                <div class="skill-icon">
-                  <img src="{% static 'portfolio/images/icons/apps/home.svg' %}" alt="Frontend" class="skill-svg">
+          <div class="row mb-4">
+            <div class="col-md-5">
+              <div class="profile-section">
+                <div class="profile-image">
+                  <img src="{% static 'portfolio/images/icons/apps/my-pic.jpeg' %}" alt="Profile" class="profile-avatar">
                 </div>
-                <h5>Frontend</h5>
-                <p class="text-muted small">React, Vue, HTML/CSS</p>
+                <h1 class="profile-name">Suchit Sharma</h1>
+                <p class="profile-title">AI/ML Researcher & Full Stack Developer</p>
+                <p class="profile-description">
+                  Passionate about <strong>Artificial Intelligence</strong> and <strong>Machine Learning</strong>, with active research contributions in multimedia applications. 
+                  Published researcher with expertise in <em>Django backend development</em>, computer vision, and data science.
+                </p>
+                
+                <div class="research-highlight mt-3 mb-4">
+                  <h6>📄 Recent Publication</h6>
+                  <p class="small">
+                    <strong>Multimedia Tools and Applications</strong><br>
+                    <a href="https://link.springer.com/article/10.1007/s11042-025-20772-8" target="_blank" class="publication-link">
+                      View Research Paper →
+                    </a>
+                  </p>
+                </div>
+                
+                <div class="skills-preview mt-4">
+                  <h5>🚀 Technical Expertise</h5>
+                  <div class="skill-tags">
+                    <span class="skill-tag ai-ml">AI/ML</span>
+                    <span class="skill-tag">TensorFlow</span>
+                    <span class="skill-tag">Python</span>
+                    <span class="skill-tag">Django</span>
+                    <span class="skill-tag">Data Science</span>
+                    <span class="skill-tag">OpenCV</span>
+                    <span class="skill-tag">Research</span>
+                  </div>
+                </div>
               </div>
             </div>
-            <div class="col-md-3 mb-3">
-              <div class="skill-card">
-                <div class="skill-icon">
-                  <img src="{% static 'portfolio/images/icons/system/settings.svg' %}" alt="Backend" class="skill-svg">
+            
+            <div class="col-md-7">
+              <div class="resume-section-compact">
+                <h4>📄 My Resume</h4>
+                <div class="resume-container-compact">
+                  <iframe src="{% static 'portfolio/images/icons/apps/resume.pdf' %}" 
+                          type="application/pdf" 
+                          width="100%" 
+                          height="500px"
+                          class="resume-pdf resume-iframe">
+                    <p>Your browser doesn't support PDF viewing. 
+                       <a href="{% static 'portfolio/images/icons/apps/resume.pdf' %}" target="_blank" class="btn btn-primary">
+                         Download Resume PDF
+                       </a>
+                    </p>
+                  </iframe>
+                  <div class="resume-actions-compact">
+                    <a href="{% static 'portfolio/images/icons/apps/resume.pdf' %}" target="_blank" class="btn btn-outline-primary btn-sm">
+                      <img src="{% static 'portfolio/images/icons/system/info.svg' %}" alt="View" class="inline-icon">
+                      View Full
+                    </a>
+                    <a href="{% static 'portfolio/images/icons/apps/resume.pdf' %}" download class="btn btn-primary btn-sm">
+                      <img src="{% static 'portfolio/images/icons/apps/contact.svg' %}" alt="Download" class="inline-icon">
+                      Download
+                    </a>
+                  </div>
                 </div>
-                <h5>Backend</h5>
-                <p class="text-muted small">Django, Node.js, Python</p>
-              </div>
-            </div>
-            <div class="col-md-3 mb-3">
-              <div class="skill-card">
-                <div class="skill-icon">
-                  <img src="{% static 'portfolio/images/icons/apps/contact.svg' %}" alt="Mobile" class="skill-svg">
-                </div>
-                <h5>Mobile</h5>
-                <p class="text-muted small">React Native, Flutter</p>
-              </div>
-            </div>
-            <div class="col-md-3 mb-3">
-              <div class="skill-card">
-                <div class="skill-icon">
-                  <img src="{% static 'portfolio/images/icons/system/windows.svg' %}" alt="Cloud" class="skill-svg">
-                </div>
-                <h5>Cloud</h5>
-                <p class="text-muted small">AWS, Docker, DevOps</p>
               </div>
             </div>
           </div>

@@ -411,35 +411,82 @@ body {
 /* Profile Section */
 .profile-section {
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: 0;
 }
 
-.profile-image {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    margin: 0 auto 20px;
-    background: var(--primary-gradient);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 48px;
-    color: white;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
+.profile-section .profile-image {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 28px;
+    text-align: center;
 }
 
-.profile-name {
-    font-size: 28px;
-    font-weight: 700;
+.profile-section .profile-name {
+    font-size: 24px;
+    margin-bottom: 6px;
+}
+
+.profile-section .profile-title {
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+.profile-section p {
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+/* Enhanced Profile Section Styles */
+.profile-description {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 16px;
+}
+
+.profile-description strong {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.profile-description em {
+    color: #667eea;
+    font-style: normal;
+    font-weight: 500;
+}
+
+.research-highlight {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+    border-left: 4px solid var(--primary-gradient);
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin: 16px 0;
+}
+
+.research-highlight h6 {
     color: var(--text-primary);
     margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 13px;
 }
 
-.profile-title {
-    font-size: 16px;
-    color: var(--text-secondary);
-    margin-bottom: 20px;
+.publication-link {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 12px;
+    transition: color 0.3s ease;
+}
+
+.publication-link:hover {
+    color: #764ba2;
+    text-decoration: underline;
+}
+
+.skill-tag.ai-ml {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-weight: 600;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
 }
 
 /* Skills and Projects */
@@ -659,9 +706,30 @@ html {
 }
 
 .profile-avatar {
-    width: 80px;
-    height: 80px;
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(102, 126, 234, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+}
+
+.profile-avatar:hover {
+    transform: scale(1.05);
+    border-color: rgba(102, 126, 234, 0.4);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+}
+
+/* Dark mode adjustments for profile avatar */
+[data-theme="dark"] .profile-avatar {
+    border-color: rgba(138, 180, 248, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .profile-avatar:hover {
+    border-color: rgba(138, 180, 248, 0.5);
+    box-shadow: 0 6px 20px rgba(138, 180, 248, 0.4);
 }
 
 .app-header {
@@ -702,54 +770,96 @@ html {
     margin-bottom: 8px;
 }
 
-/* Responsive Design */
+/* Simplified Finder Styles */
+.finder-simple {
+    padding: 0;
+}
+
+.finder-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.finder-header h4 {
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.finder-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.finder-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 16px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.finder-item:hover {
+    background: rgba(0, 123, 255, 0.1);
+    border-color: rgba(0, 123, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.finder-file-icon {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    margin-bottom: 8px;
+}
+
+.finder-file-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+    line-height: 1.2;
+}
+
+.finder-file-type {
+    font-size: 11px;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.finder-status {
+    padding: 8px 0;
+    border-top: 1px solid var(--border-color);
+    font-size: 11px;
+    color: var(--text-secondary);
+    text-align: center;
+}
+
+/* Responsive Finder */
 @media (max-width: 768px) {
-    .top-bar {
-        height: 28px;
+    .finder-grid {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 12px;
+    }
+    
+    .finder-file-icon {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .finder-file-name {
         font-size: 12px;
-        padding: 0 12px;
     }
     
-    .center-title {
-        font-size: 12px;
-        color: white !important;
-    }
-    
-    .right-status {
-        font-size: 11px;
-    }
-    
-    .desktop {
-        margin-top: 28px;
-        min-height: calc(100vh - 28px);
-        padding: 15px;
-    }
-    
-    .dock {
-        bottom: 12px;
-        padding: 8px 12px;
-        gap: 6px;
-    }
-    
-    .dock-item {
-        width: 44px;
-        height: 44px;
-        font-size: 16px;
-        padding: 1px;
-    }
-    
-    .dock-icon {
-        width: 42px;
-        height: 42px;
-    }
-    
-    .mac-window {
-        margin: 10px;
-        border-radius: 8px;
-    }
-    
-    .window-content {
-        padding: 20px;
+    .finder-file-type {
+        font-size: 10px;
     }
 }
 
@@ -854,4 +964,176 @@ img[src*="apple-logo"] {
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
+}
+
+/* Resume Section Styles */
+.resume-section {
+    margin: 30px 0;
+    padding: 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.02);
+}
+
+.resume-section h4 {
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    font-weight: 600;
+}
+
+.resume-container {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.resume-pdf {
+    border: none;
+    border-radius: 8px 8px 0 0;
+    display: block;
+}
+
+.resume-actions {
+    padding: 16px;
+    background: var(--window-header-bg);
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    border-top: 1px solid var(--border-color);
+}
+
+/* Dark mode adjustments for resume */
+[data-theme="dark"] .resume-section {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+[data-theme="dark"] .resume-actions {
+    background: var(--window-header-bg);
+}
+
+/* Compact Resume Section Styles */
+.resume-section-compact {
+    margin: 0;
+    padding: 0;
+}
+
+.resume-section-compact h4 {
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.resume-container-compact {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--border-color);
+}
+
+.resume-actions-compact {
+    padding: 10px 12px;
+    background: var(--window-header-bg);
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    border-top: 1px solid var(--border-color);
+}
+
+.resume-actions-compact .btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    padding: 6px 12px;
+}
+
+/* Resume responsiveness for maximized windows */
+.mac-window.maximized .resume-iframe {
+    height: 70vh !important;
+    min-height: 600px;
+}
+
+.mac-window.maximized .resume-container-compact {
+    height: calc(70vh + 60px);
+    display: flex;
+    flex-direction: column;
+}
+
+.mac-window.maximized .resume-actions-compact {
+    margin-top: auto;
+}
+
+/* Skills Preview Styles */
+.skills-preview h5 {
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.skill-tag {
+    background: var(--primary-gradient);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark mode adjustments for compact resume */
+[data-theme="dark"] .resume-actions-compact {
+    background: var(--window-header-bg);
+}
+
+/* Responsive resume */
+@media (max-width: 768px) {
+    .resume-pdf {
+        height: 400px;
+    }
+    
+    .resume-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .resume-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .resume-actions-compact iframe {
+        height: 300px;
+    }
+    
+    .resume-actions-compact {
+        flex-direction: column;
+        gap: 6px;
+    }
+    
+    .resume-actions-compact .btn {
+        width: 100%;
+        justify-content: center;
+        font-size: 12px;
+    }
+    
+    .skill-tags {
+        justify-content: center;
+    }
+    
+    .profile-section .profile-name {
+        font-size: 20px;
+    }
+    
+    .profile-section .profile-title {
+        font-size: 13px;
+    }
 }
