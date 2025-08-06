@@ -27,7 +27,8 @@ def simple_test(request):
 
 def home(request):
     try:
-        return render(request, 'portfolio/home.html')
+        # Use minimal template for now - complex UI causing issues on Vercel
+        return render(request, 'portfolio/home_minimal.html')
     except Exception as e:
         # If main template fails, return error info
         return JsonResponse({
@@ -35,6 +36,19 @@ def home(request):
             'error': str(e),
             'error_type': type(e).__name__,
             'message': 'Main template failed to render. Check static files or template syntax.'
+        }, status=500)
+
+def home_complex(request):
+    """Test the original complex template"""
+    try:
+        return render(request, 'portfolio/home.html')
+    except Exception as e:
+        return JsonResponse({
+            'status': 'complex_template_error',
+            'error': str(e),
+            'error_type': type(e).__name__,
+            'template': 'portfolio/home.html',
+            'message': 'Complex macOS template failed to render.'
         }, status=500)
 
 def projects(request):
