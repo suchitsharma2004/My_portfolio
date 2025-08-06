@@ -1,13 +1,18 @@
-# Deployment Guide
+# macOS Portfolio - Vercel Deployment Guide
 
-## 🚀 Deploy to Vercel
+## � Deployment Checklist
 
-### Prerequisites:
-1. Gmail App Password configured
-2. Environment variables set in Vercel
+### 1. Files Added for Vercel Deployment
+- ✅ `vercel.json` - Vercel configuration
+- ✅ `build_files.sh` - Build script for static files
+- ✅ `requirements.txt` - Python dependencies
+- ✅ `.env.production` - Environment variables template
+- ✅ Updated `settings.py` - Production settings
+- ✅ Updated `wsgi.py` - Vercel compatibility
 
-### Vercel Environment Variables:
-Add these in your Vercel project settings:
+### 2. Environment Variables to Set in Vercel
+
+Go to your Vercel project dashboard → Settings → Environment Variables and add:
 
 ```
 EMAIL_HOST_PASSWORD=your_gmail_app_password_here
