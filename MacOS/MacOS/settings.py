@@ -28,22 +28,16 @@ except ImportError:
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Debug environment variables on Vercel
-print(f"DEBUG env var: {os.environ.get('DEBUG', 'NOT_SET')}")
-print(f"SECRET_KEY set: {'SECRET_KEY' in os.environ}")
-print(f"ALLOWED_HOSTS env var: {os.environ.get('ALLOWED_HOSTS', 'NOT_SET')}")
-
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY', default='django-insecure-sd#*z=82hs7i@==xd7nq9z*y9ag58c8v+kw=-nq^$e@&qc%^5#')
+SECRET_KEY = config('SECRET_KEY', default='woy*3e6#a#r1yqwr8c&0=rv7*q9#zqmo#^())su3glb*g%r&p(')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=True, cast=bool)
+DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=lambda v: [s.strip() for s in v.split(',')])
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*.vercel.app,localhost,127.0.0.1', cast=lambda v: [s.strip() for s in v.split(',')])
 
 
 # Application definition
@@ -90,13 +84,12 @@ TEMPLATES = [
 WSGI_APPLICATION = 'MacOS.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
+# Database - Use in-memory SQLite for serverless environment
+# For Vercel, using file-based SQLite can cause issues in serverless functions
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': ':memory:' if not DEBUG else BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -163,13 +156,13 @@ if not DEBUG:
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
     X_FRAME_OPTIONS = 'DENY'
-    SECURE_HSTS_SECONDS = 86400
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    SECURE_HSTS_PRELOAD = True
-
-    # CSRF settings for production
-    CSRF_COOKIE_SECURE = True
-    SESSION_COOKIE_SECURE = True
+    
+    # Disable HTTPS enforcement for now to test deployment
+    # SECURE_HSTS_SECONDS = 86400
+    # SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    # SECURE_HSTS_PRELOAD = True
+    # CSRF_COOKIE_SECURE = True
+    # SESSION_COOKIE_SECURE = True
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
