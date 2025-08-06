@@ -782,22 +782,28 @@
       terminal: {
         title: 'Terminal',
         content: `
-          <div style="background: #000; color: #00ff00; padding: 20px; border-radius: 8px; font-family: monospace;">
+          <div id="terminal-container" style="background: #000; color: #00ff00; padding: 20px; border-radius: 8px; font-family: monospace; height: 400px; overflow-y: auto;">
             <div>Last login: ${new Date().toLocaleString()}</div>
-            <div>suchit@portfolio ~ % <span style="animation: blink 1s infinite;">|</span></div>
+            <div>suchit@portfolio ~ %</div>
             <br>
-            <div style="color: #fff;">Welcome to Suchit's Portfolio Terminal!</div>
-            <div style="color: #ccc;">Type 'help' for available commands</div>
+            <div style="color: #fff;">Welcome to Suchit's AI-Powered Terminal!</div>
+            <div style="color: #ccc;">This terminal is powered by Mistral 7B AI assistant.</div>
+            <div style="color: #ccc;">Ask me anything about Suchit Sharma or his work!</div>
             <br>
-            <div style="color: #fff;">Available commands:</div>
-            <div style="color: #ccc;">  help     - Show this help message</div>
-
-            <div style="color: #ccc;">  skills   - List my technical skills</div>
-            <div style="color: #ccc;">  projects - Show my featured projects</div>
-            <div style="color: #ccc;">  clear    - Clear the terminal</div>
+            <div id="terminal-output"></div>
+            <div id="terminal-input-line" style="display: flex; align-items: center;">
+              <span style="color: #00ff00;">suchit@portfolio ~ % </span>
+              <input type="text" id="terminal-input" style="background: transparent; border: none; outline: none; color: #00ff00; font-family: monospace; flex: 1; margin-left: 5px;" placeholder="Type your message here..." />
+            </div>
           </div>
           <style>
             @keyframes blink { 50% { opacity: 0; } }
+            #terminal-input::placeholder { color: #666; }
+            #terminal-container { position: relative; }
+            .terminal-loading {
+              color: #ccc;
+              animation: blink 1s infinite;
+            }
           </style>
         `
       }
@@ -814,7 +820,181 @@
       if (app) {
         window.desktopManager.createWindow(appName, app.title, app.content);
         window.desktopManager.showNotification(`${app.title} opened`, '');
+        
+        // Special handling for terminal app
+        if (appName === 'terminal') {
+          setTimeout(() => setupTerminal(), 100); // Small delay to ensure DOM is ready
+        }
       }
+    }
+
+    // Terminal functionality
+    function setupTerminal() {
+      const terminalInput = document.getElementById('terminal-input');
+      const terminalOutput = document.getElementById('terminal-output');
+      
+      if (!terminalInput || !terminalOutput) {
+        console.log('Terminal elements not found, retrying...');
+        setTimeout(() => setupTerminal(), 200);
+        return;
+      }
+      
+      // Focus on the input
+      terminalInput.focus();
+      
+      // Handle Enter key
+      terminalInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          const message = terminalInput.value.trim();
+          if (message) {
+            // Display user message
+            addTerminalLine(`suchit@portfolio ~ % ${message}`, '#00ff00');
+            
+            // Clear input
+            terminalInput.value = '';
+            
+            // Handle built-in commands first
+            if (handleBuiltInCommands(message)) {
+              return;
+            }
+            
+            // Show loading indicator
+            const loadingId = addTerminalLine('AI is thinking...', '#ccc', 'terminal-loading');
+            
+            // Send to LLM
+            sendToLLM(message, loadingId);
+          }
+        }
+      });
+      
+      // Show initial help
+      addTerminalLine('💡 Try asking: "What are Suchit\'s skills?" or "Tell me about his projects"', '#ccc');
+      addTerminalLine('📱 Built-in commands: clear, help, skills, projects', '#666');
+    }
+    
+    function addTerminalLine(text, color = '#00ff00', className = '') {
+      const terminalOutput = document.getElementById('terminal-output');
+      if (!terminalOutput) return null;
+      
+      const line = document.createElement('div');
+      line.style.color = color;
+      line.style.marginBottom = '5px';
+      if (className) line.className = className;
+      line.textContent = text;
+      
+      terminalOutput.appendChild(line);
+      
+      // Scroll to bottom
+      const container = document.getElementById('terminal-container');
+      if (container) {
+        container.scrollTop = container.scrollHeight;
+      }
+      
+      return line;
+    }
+    
+    function handleBuiltInCommands(command) {
+      const cmd = command.toLowerCase().trim();
+      
+      switch(cmd) {
+        case 'clear':
+          document.getElementById('terminal-output').innerHTML = '';
+          return true;
+          
+        case 'help':
+          addTerminalLine('Available commands:', '#fff');
+          addTerminalLine('  clear    - Clear the terminal', '#ccc');
+          addTerminalLine('  help     - Show this help', '#ccc');
+          addTerminalLine('  skills   - Show technical skills', '#ccc');
+          addTerminalLine('  projects - Show featured projects', '#ccc');
+          addTerminalLine('', '#ccc');
+          addTerminalLine('💬 Or ask me anything about Suchit! I\'m powered by AI.', '#0ff');
+          return true;
+          
+        case 'skills':
+          addTerminalLine('🛠️ Technical Skills:', '#fff');
+          addTerminalLine('• Languages: Python, JavaScript, TypeScript, Java', '#ccc');
+          addTerminalLine('• Frontend: React, Vue.js, HTML5, CSS3, Bootstrap', '#ccc');
+          addTerminalLine('• Backend: Django, Node.js, Express.js', '#ccc');
+          addTerminalLine('• Database: PostgreSQL, MySQL, MongoDB', '#ccc');
+          addTerminalLine('• AI/ML: TensorFlow, PyTorch, Scikit-learn', '#ccc');
+          addTerminalLine('• Cloud: AWS, Docker, Kubernetes', '#ccc');
+          addTerminalLine('• Tools: Git, VS Code, Figma', '#ccc');
+          return true;
+          
+        case 'projects':
+          addTerminalLine('🚀 Featured Projects:', '#fff');
+          addTerminalLine('• macOS Portfolio - This interactive web experience', '#ccc');
+          addTerminalLine('• AI Chat Application - Real-time chat with ML models', '#ccc');
+          addTerminalLine('• E-commerce Platform - Full-stack Django application', '#ccc');
+          addTerminalLine('• Machine Learning Pipeline - Automated ML workflows', '#ccc');
+          addTerminalLine('', '#ccc');
+          addTerminalLine('💡 Ask me for more details about any project!', '#0ff');
+          return true;
+          
+        default:
+          return false;
+      }
+    }
+    
+    async function sendToLLM(message, loadingElement) {
+      try {
+        const response = await fetch('/api/llm-chat/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ message: message })
+        });
+        
+        // Remove loading indicator
+        if (loadingElement && loadingElement.parentNode) {
+          loadingElement.parentNode.removeChild(loadingElement);
+        }
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (data.error) {
+          addTerminalLine(`❌ Error: ${data.error}`, '#ff6b6b');
+        } else {
+          // Display AI response with typing effect
+          displayTypingResponse(data.response);
+        }
+        
+      } catch (error) {
+        console.error('Error calling LLM:', error);
+        // Remove loading indicator
+        if (loadingElement && loadingElement.parentNode) {
+          loadingElement.parentNode.removeChild(loadingElement);
+        }
+        addTerminalLine('❌ Connection error. Make sure the server is running.', '#ff6b6b');
+      }
+    }
+    
+    function displayTypingResponse(text) {
+      const responseElement = addTerminalLine('', '#0ff');
+      let i = 0;
+      
+      function typeWriter() {
+        if (i < text.length) {
+          responseElement.textContent += text.charAt(i);
+          i++;
+          
+          // Scroll to bottom as we type
+          const container = document.getElementById('terminal-container');
+          if (container) {
+            container.scrollTop = container.scrollHeight;
+          }
+          
+          setTimeout(typeWriter, 20); // Adjust typing speed here
+        }
+      }
+      
+      typeWriter();
     }
 
     function openAboutWindow() {
