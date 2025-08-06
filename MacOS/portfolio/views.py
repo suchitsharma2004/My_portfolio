@@ -27,15 +27,16 @@ def simple_test(request):
 
 def home(request):
     try:
-        # Use minimal template for now - complex UI causing issues on Vercel
-        return render(request, 'portfolio/home_minimal.html')
+        # Back to the full macOS interface
+        return render(request, 'portfolio/home.html')
     except Exception as e:
-        # If main template fails, return error info
+        # If main template fails, return error info for debugging
         return JsonResponse({
             'status': 'template_error',
             'error': str(e),
             'error_type': type(e).__name__,
-            'message': 'Main template failed to render. Check static files or template syntax.'
+            'template': 'portfolio/home.html',
+            'message': 'Complex macOS template failed to render. Check static files or template syntax.'
         }, status=500)
 
 def home_complex(request):
@@ -336,3 +337,21 @@ def health_check(request):
             'error': str(e),
             'error_type': type(e).__name__
         }, status=500)
+
+def test_static(request):
+    """Test static files loading"""
+    from django.conf import settings
+    import os
+    
+    static_files_info = {
+        'STATIC_URL': settings.STATIC_URL,
+        'STATIC_ROOT': settings.STATIC_ROOT,
+        'STATICFILES_DIRS': settings.STATICFILES_DIRS,
+        'css_file_exists': os.path.exists(os.path.join(settings.BASE_DIR, 'portfolio/static/portfolio/css/styles.css')),
+        'static_root_exists': os.path.exists(settings.STATIC_ROOT) if settings.STATIC_ROOT else False,
+    }
+    
+    return JsonResponse({
+        'status': 'static_files_debug',
+        'info': static_files_info
+    })

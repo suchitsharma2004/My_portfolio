@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import home, projects, contact, llm_chat, llm_test, health_check, simple_test, home_complex
+from .views import home, projects, contact, llm_chat, llm_test, health_check, simple_test, home_complex, test_static
 
 urlpatterns = [
     path('', home, name='home'),
@@ -10,4 +10,5 @@ urlpatterns = [
     path('api/llm-test/', llm_test, name='llm_test'),
     path('health/', health_check, name='health_check'),
     path('test/', simple_test, name='simple_test'),
+    path('debug/static/', test_static, name='test_static'),
 ]

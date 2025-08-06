@@ -137,11 +137,17 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-# Add this if it's not already
+# Static files directory
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'portfolio/static')]
 
 # Vercel deployment settings with WhiteNoise
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Add static file finders for better discovery
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+]
 
 # WhiteNoise configuration for Django 5.2+ (with fallback)
 try:
