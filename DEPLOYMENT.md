@@ -55,3 +55,17 @@ EMAIL_HOST_PASSWORD=your-gmail-app-password
 - Development: Uses local .env file
 - Production: Uses Vercel environment variables
 - Emails sent to: suchit.sharma.delhi@gmail.com
+
+## 🔧 **Troubleshooting Fixed**
+
+**Previous Error:** `WSGI application 'MacOS.wsgi.application' could not be loaded`
+
+**Root Cause:** Missing WhiteNoise dependency in requirements.txt causing WSGI import failure.
+
+**Fix Applied:**
+1. ✅ Added specific WhiteNoise version (6.6.0) to requirements.txt
+2. ✅ Updated Django STORAGES configuration for Django 5.2+
+3. ✅ Simplified WSGI file to avoid startup complexity
+4. ✅ Tested WSGI loading and static file collection locally
+
+**Current Status:** ✅ **Ready for Vercel Deployment**

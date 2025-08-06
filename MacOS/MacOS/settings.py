@@ -127,8 +127,15 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'portfolio/static')]
 # Vercel deployment settings with WhiteNoise
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# WhiteNoise configuration
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# WhiteNoise configuration for Django 5.2+
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 # Production settings for Vercel
 if not DEBUG:
