@@ -26,14 +26,11 @@ local_settings.py
 db.sqlite3
 db.sqlite3-journal
 
-# Static files build directory for Vercel
-staticfiles_build/
-
 # Environment variables
 .env
 .env.local
-
-# Keep .env.production as example but don't commit actual production values
+.env.production
+.env.development
 
 # IDE
 .vscode/
@@ -47,3 +44,4 @@ staticfiles_build/
 # Deployment
 node_modules/
 .vercel
+staticfiles_build/
