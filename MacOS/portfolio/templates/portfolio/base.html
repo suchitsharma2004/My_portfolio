@@ -552,12 +552,6 @@
                 <div class="finder-file-type">Application</div>
               </div>
               
-              <div class="finder-item" onclick="window.desktopManager.openApp('about')">
-                <img src="{% static 'portfolio/images/icons/apps/about.svg' %}" class="finder-file-icon">
-                <div class="finder-file-name">About Me</div>
-                <div class="finder-file-type">Document</div>
-              </div>
-              
               <div class="finder-item" onclick="window.desktopManager.openApp('projects')">
                 <img src="{% static 'portfolio/images/icons/apps/projects.svg' %}" class="finder-file-icon">
                 <div class="finder-file-name">My Projects</div>
@@ -584,7 +578,7 @@
             </div>
             
             <div class="finder-status">
-              6 items
+              5 items
             </div>
           </div>
         `
@@ -661,34 +655,6 @@
           </div>
         `
       },
-      about: {
-        title: 'About Me',
-        content: `
-          <div class="row">
-            <div class="col-md-4 text-center mb-4">
-              <div class="profile-image">
-                <img src="{% static 'portfolio/images/icons/apps/about.svg' %}" alt="About" class="profile-avatar">
-              </div>
-              <h3 class="mt-3">Suchit Sharma</h3>
-              <p class="text-muted">Full Stack Developer</p>
-            </div>
-            <div class="col-md-8">
-              <div class="app-header">
-                <img src="{% static 'portfolio/images/icons/apps/about.svg' %}" alt="About" class="app-icon">
-                <h4>Hello, I'm Suchit!</h4>
-              </div>
-              <p>I'm a passionate full-stack developer with a love for creating innovative web applications.</p>
-              <h5 class="mt-4">What I Do</h5>
-              <ul class="feature-list">
-                <li><img src="{% static 'portfolio/images/icons/apps/home.svg' %}" class="inline-icon"> Build responsive web applications</li>
-                <li><img src="{% static 'portfolio/images/icons/apps/contact.svg' %}" class="inline-icon"> Develop mobile apps</li>
-                <li><img src="{% static 'portfolio/images/icons/system/settings.svg' %}" class="inline-icon"> Design scalable backend systems</li>
-                <li><img src="{% static 'portfolio/images/icons/apps/projects.svg' %}" class="inline-icon"> Create intuitive user interfaces</li>
-              </ul>
-            </div>
-          </div>
-        `
-      },
       projects: {
         title: 'My Projects',
         content: `
@@ -731,27 +697,43 @@
               <div class="contact-info">
                 <div class="contact-item">
                   <img src="{% static 'portfolio/images/icons/apps/contact.svg' %}" alt="Email" class="inline-icon">
-                  <strong>Email:</strong> suchit.sharma@example.com
+                  <strong>Email:</strong> suchit.sharma.delhi@gmail.com
                 </div>
                 <div class="contact-item">
-                  <img src="{% static 'portfolio/images/icons/apps/contact.svg' %}" alt="Phone" class="inline-icon">
-                  <strong>Phone:</strong> +91 98765 43210
+                  <img src="{% static 'portfolio/images/icons/apps/phone.png' %}" alt="Phone" class="inline-icon">
+                  <strong>Phone:</strong> +91 9311294118
+                </div>
+                <div class="contact-item">
+                  <img src="{% static 'portfolio/images/icons/apps/github.png' %}" alt="GitHub" class="inline-icon">
+                  <strong>GitHub:</strong> <a href="https://github.com/suchitsharma2004" target="_blank">suchitsharma2004</a>
+                </div>
+                <div class="contact-item">
+                  <img src="{% static 'portfolio/images/icons/apps/linkedin.png' %}" alt="LinkedIn" class="inline-icon">
+                  <strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/suchit-sharma2004/" target="_blank">suchit-sharma2004</a>
                 </div>
               </div>
             </div>
             <div class="col-md-6">
-              <form>
+              <form method="post" action="/contact/">
+                <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
                 <div class="mb-3">
-                  <input type="text" class="form-control" placeholder="Your Name" required>
+                  <input type="text" class="form-control" name="name" placeholder="Your Name" required>
                 </div>
                 <div class="mb-3">
-                  <input type="email" class="form-control" placeholder="Your Email" required>
+                  <input type="email" class="form-control" name="email" placeholder="Your Email" required>
                 </div>
                 <div class="mb-3">
-                  <textarea class="form-control" rows="3" placeholder="Your Message" required></textarea>
+                  <input type="text" class="form-control" name="subject" placeholder="Subject" required>
+                </div>
+                <div class="mb-3">
+                  <textarea class="form-control" name="message" rows="3" placeholder="Your Message" required></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary">Send Message</button>
               </form>
+              
+              <div id="form-messages" class="mt-3" style="display: none;">
+                <div class="alert" role="alert"></div>
+              </div>
             </div>
           </div>
         `
@@ -768,7 +750,7 @@
             <br>
             <div style="color: #fff;">Available commands:</div>
             <div style="color: #ccc;">  help     - Show this help message</div>
-            <div style="color: #ccc;">  about    - Display information about me</div>
+
             <div style="color: #ccc;">  skills   - List my technical skills</div>
             <div style="color: #ccc;">  projects - Show my featured projects</div>
             <div style="color: #ccc;">  clear    - Clear the terminal</div>
