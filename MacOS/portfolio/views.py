@@ -264,3 +264,30 @@ def llm_test(request):
             'error': str(e),
             'status': 'error'
         }, status=500)
+
+def health_check(request):
+    """Simple health check endpoint for debugging Vercel deployment"""
+    try:
+        import django
+        import os
+        
+        health_data = {
+            'status': 'healthy',
+            'django_version': django.get_version(),
+            'debug': settings.DEBUG,
+            'secret_key_set': bool(settings.SECRET_KEY and settings.SECRET_KEY != 'django-insecure-sd#*z=82hs7i@==xd7nq9z*y9ag58c8v+kw=-nq^$e@&qc%^5#'),
+            'allowed_hosts': settings.ALLOWED_HOSTS,
+            'environment_vars': {
+                'DEBUG': os.environ.get('DEBUG', 'NOT_SET'),
+                'SECRET_KEY_SET': 'SECRET_KEY' in os.environ,
+                'ALLOWED_HOSTS': os.environ.get('ALLOWED_HOSTS', 'NOT_SET'),
+                'EMAIL_HOST_PASSWORD_SET': 'EMAIL_HOST_PASSWORD' in os.environ,
+            }
+        }
+        return JsonResponse(health_data)
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'error': str(e),
+            'error_type': type(e).__name__
+        }, status=500)

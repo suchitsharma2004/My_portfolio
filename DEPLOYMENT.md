@@ -3,13 +3,15 @@
 ## � Deployment Checklist
 
 ### 1. Files Added for Vercel Deployment
-- ✅ `vercel.json` - Vercel configuration (simplified)
+- ✅ `vercel.json` - Simplified Vercel configuration (no builds section)
+- ✅ `app.py` - Root-level WSGI wrapper for Vercel
 - ✅ `build_files.sh` - Simple build script  
 - ✅ `requirements.txt` - Python dependencies (includes whitenoise)
 - ✅ `.env.vercel.template` - Environment variables template (safe to commit)
 - ✅ `.env.production` - Your actual env file (in .gitignore - NOT committed)
-- ✅ Updated `settings.py` - Production settings with WhiteNoise
-- ✅ Updated `wsgi.py` - Vercel compatibility with static file handling
+- ✅ Updated `settings.py` - Production settings with WhiteNoise + debugging
+- ✅ Updated `wsgi.py` - Enhanced error handling
+- ✅ Added `/health/` endpoint for debugging
 
 ### 2. Environment Variables to Set in Vercel
 
@@ -68,4 +70,49 @@ EMAIL_HOST_PASSWORD=your-gmail-app-password
 3. ✅ Simplified WSGI file to avoid startup complexity
 4. ✅ Tested WSGI loading and static file collection locally
 
-**Current Status:** ✅ **Ready for Vercel Deployment**
+---
+
+**New Error:** `500: INTERNAL_SERVER_ERROR - FUNCTION_INVOCATION_FAILED`
+
+**Potential Causes & Fixes Applied:**
+1. ✅ Added fallback environment variable handling (doesn't rely on python-decouple)
+2. ✅ Added debugging to WSGI and settings files
+3. ✅ Added error handling for email configuration
+4. ✅ Added fallback for STORAGES configuration
+5. ✅ Added all required dependencies to requirements.txt
+
+**Debug Steps Added:**
+- Environment variable debugging in settings.py
+- Error handling in WSGI file with traceback
+- Graceful fallbacks for all external dependencies
+
+**Current Status:** ✅ **Ready for Vercel Deployment with Enhanced Debugging**
+
+---
+
+**Latest Warning:** `Due to builds existing in your configuration file, the Build and Development Settings defined in your Project Settings will not apply`
+
+**Fix Applied:**
+1. ✅ Removed `builds` section from vercel.json
+2. ✅ Created root-level `app.py` WSGI wrapper
+3. ✅ Simplified vercel.json to use `functions` instead of `builds`
+4. ✅ Let Vercel handle automatic build detection
+
+**Current vercel.json:**
+```json
+{
+  "version": 2,
+  "functions": {
+    "app.py": {
+      "runtime": "python3.9"
+    }
+  }
+}
+```
+
+**Current Status:** ✅ **Ready for Vercel Deployment with Simplified Configuration**
+
+**Debug Steps:**
+1. Deploy these changes
+2. Check `/health/` endpoint for debug info
+3. Check Vercel function logs for any remaining errors

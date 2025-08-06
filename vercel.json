@@ -1,23 +1,8 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "MacOS/MacOS/wsgi.py",
-      "use": "@vercel/python",
-      "config": { 
-        "maxLambdaSize": "15mb", 
-        "runtime": "python3.9"
-      }
+  "functions": {
+    "app.py": {
+      "runtime": "python3.9"
     }
-  ],
-  "routes": [
-    {
-      "src": "/static/(.*)",
-      "dest": "/static/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "MacOS/MacOS/wsgi.py"
-    }
-  ]
+  }
 }

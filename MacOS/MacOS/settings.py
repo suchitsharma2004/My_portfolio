@@ -11,10 +11,27 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
-from decouple import config
+import os
+
+# Try to import decouple, fallback to os.environ for Vercel
+try:
+    from decouple import config
+except ImportError:
+    def config(key, default=None, cast=None):
+        value = os.environ.get(key, default)
+        if cast and value is not None:
+            if cast == bool:
+                return value.lower() in ('true', '1', 'yes', 'on')
+            return cast(value)
+        return value
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Debug environment variables on Vercel
+print(f"DEBUG env var: {os.environ.get('DEBUG', 'NOT_SET')}")
+print(f"SECRET_KEY set: {'SECRET_KEY' in os.environ}")
+print(f"ALLOWED_HOSTS env var: {os.environ.get('ALLOWED_HOSTS', 'NOT_SET')}")
 
 
 # Quick-start development settings - unsuitable for production
@@ -121,21 +138,24 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # Add this if it's not already
-import os
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'portfolio/static')]
 
 # Vercel deployment settings with WhiteNoise
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# WhiteNoise configuration for Django 5.2+
-STORAGES = {
-    "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
-    },
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-    },
-}
+# WhiteNoise configuration for Django 5.2+ (with fallback)
+try:
+    STORAGES = {
+        "default": {
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+    }
+except Exception:
+    # Fallback for older Django or if WhiteNoise fails
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Production settings for Vercel
 if not DEBUG:
@@ -156,21 +176,20 @@ if not DEBUG:
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Email Configuration
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_USE_SSL = False
-EMAIL_HOST_USER = 'suchit.sharma.delhi@gmail.com'  # Your Gmail address
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')  # Gmail App Password from .env
-DEFAULT_FROM_EMAIL = 'suchit.sharma.delhi@gmail.com'
-
-# SSL settings for macOS
-import ssl
-EMAIL_SSL_CERTFILE = None
-EMAIL_SSL_KEYFILE = None
-EMAIL_TIMEOUT = 60
-
-# Contact form settings
-CONTACT_EMAIL = 'suchit.sharma.delhi@gmail.com'  # Where to send contact form emails
+# Email Configuration (with error handling)
+try:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = 'smtp.gmail.com'
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+    EMAIL_USE_SSL = False
+    EMAIL_HOST_USER = 'suchit.sharma.delhi@gmail.com'  # Your Gmail address
+    EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')  # Gmail App Password from env
+    DEFAULT_FROM_EMAIL = 'suchit.sharma.delhi@gmail.com'
+    
+    # Contact form settings
+    CONTACT_EMAIL = 'suchit.sharma.delhi@gmail.com'  # Where to send contact form emails
+except Exception as e:
+    print(f"Email configuration error: {e}")
+    # Fallback to console backend if email setup fails
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
