@@ -3,8 +3,8 @@
 ## � Deployment Checklist
 
 ### 1. Files Added for Vercel Deployment
-- ✅ `vercel.json` - Simplified Vercel configuration (no builds section)
-- ✅ `app.py` - Root-level WSGI wrapper for Vercel
+- ✅ `vercel.json` - Standard Vercel configuration with @vercel/python
+- ✅ `index.py` - Root-level WSGI entry point for Vercel
 - ✅ `build_files.sh` - Simple build script  
 - ✅ `requirements.txt` - Python dependencies (includes whitenoise)
 - ✅ `.env.vercel.template` - Environment variables template (safe to commit)
@@ -90,27 +90,33 @@ EMAIL_HOST_PASSWORD=your-gmail-app-password
 
 ---
 
-**Latest Warning:** `Due to builds existing in your configuration file, the Build and Development Settings defined in your Project Settings will not apply`
+**Latest Error:** `Function Runtimes must have a valid version, for example 'now-php@1.0.0'`
 
 **Fix Applied:**
-1. ✅ Removed `builds` section from vercel.json
-2. ✅ Created root-level `app.py` WSGI wrapper
-3. ✅ Simplified vercel.json to use `functions` instead of `builds`
-4. ✅ Let Vercel handle automatic build detection
+1. ✅ Removed invalid runtime specification from vercel.json
+2. ✅ Renamed `app.py` to `index.py` for better Vercel detection
+3. ✅ Simplified vercel.json to use standard @vercel/python build
+4. ✅ Enhanced error handling in index.py for better debugging
 
 **Current vercel.json:**
 ```json
 {
-  "version": 2,
-  "functions": {
-    "app.py": {
-      "runtime": "python3.9"
+  "builds": [
+    {
+      "src": "index.py",
+      "use": "@vercel/python"
     }
-  }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "index.py"
+    }
+  ]
 }
 ```
 
-**Current Status:** ✅ **Ready for Vercel Deployment with Simplified Configuration**
+**Current Status:** ✅ **Ready for Vercel Deployment with Standard Configuration**
 
 **Debug Steps:**
 1. Deploy these changes
