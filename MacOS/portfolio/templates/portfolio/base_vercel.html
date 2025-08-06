@@ -1,0 +1,620 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}macOS Desktop{% endblock %}</title>
+  <style>
+    /* Core macOS styling - inline for Vercel compatibility */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+      background: var(--wallpaper-url, url('{% static "portfolio/images/wallpapers/wallpaper1-light.jpg" %}')) center/cover;
+      height: 100vh;
+      overflow: hidden;
+      user-select: none;
+      color: white;
+    }
+
+    /* Top Bar */
+    .top-bar {
+      background: rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(20px);
+      height: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 15px;
+      font-size: 14px;
+      color: white;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+    }
+
+    .top-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .apple-logo {
+      width: 16px;
+      height: 16px;
+      filter: brightness(0) invert(1);
+    }
+
+    /* Dock */
+    .dock {
+      position: fixed;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(20px);
+      border-radius: 15px;
+      padding: 8px;
+      display: flex;
+      gap: 8px;
+      z-index: 1000;
+    }
+
+    .dock-item {
+      width: 60px;
+      height: 60px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s ease;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .dock-item:hover {
+      transform: scale(1.2) translateY(-10px);
+    }
+
+    .dock-item img {
+      width: 50px;
+      height: 50px;
+      border-radius: 8px;
+    }
+
+    /* Desktop */
+    .desktop {
+      height: 100vh;
+      position: relative;
+      padding-top: 30px;
+    }
+
+    /* Windows */
+    .window {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+      z-index: 100;
+      display: none;
+    }
+
+    .window.active {
+      display: block;
+    }
+
+    .window-header {
+      background: rgba(240, 240, 240, 0.9);
+      height: 30px;
+      display: flex;
+      align-items: center;
+      padding: 0 15px;
+      cursor: move;
+    }
+
+    .window-controls {
+      display: flex;
+      gap: 8px;
+    }
+
+    .window-control {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .close { background: #ff5f57; }
+    .minimize { background: #ffbd2e; }
+    .maximize { background: #28ca42; }
+
+    .window-title {
+      margin-left: 10px;
+      font-size: 13px;
+      color: #333;
+    }
+
+    .window-content {
+      padding: 20px;
+      color: #333;
+      height: calc(100% - 30px);
+      overflow-y: auto;
+    }
+
+    /* Loading Screen */
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      color: white;
+    }
+
+    .loading-content {
+      text-align: center;
+    }
+
+    .loading-gif {
+      width: 100px;
+      height: 100px;
+      margin-bottom: 20px;
+    }
+
+    /* System Preferences */
+    .system-preferences {
+      width: 600px;
+      height: 400px;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .pref-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .pref-item {
+      text-align: center;
+      cursor: pointer;
+      padding: 15px;
+      border-radius: 10px;
+      transition: background 0.3s ease;
+    }
+
+    .pref-item:hover {
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    .pref-icon {
+      width: 50px;
+      height: 50px;
+      margin: 0 auto 10px;
+    }
+
+    /* Terminal */
+    .terminal {
+      width: 700px;
+      height: 500px;
+      left: 100px;
+      top: 100px;
+      background: rgba(0, 0, 0, 0.9);
+    }
+
+    .terminal-content {
+      font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+      color: #00ff00;
+      background: black;
+      padding: 15px;
+      height: 100%;
+      overflow-y: auto;
+    }
+
+    .terminal-prompt {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .terminal-input {
+      background: transparent;
+      border: none;
+      color: #00ff00;
+      font-family: inherit;
+      outline: none;
+      flex: 1;
+    }
+
+    /* Projects Window */
+    .projects-window {
+      width: 800px;
+      height: 600px;
+      left: 200px;
+      top: 80px;
+    }
+
+    /* Contact Window */
+    .contact-window {
+      width: 500px;
+      height: 400px;
+      left: 300px;
+      top: 150px;
+    }
+
+    /* Form Styling */
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 600;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-family: inherit;
+    }
+
+    .btn {
+      background: #007aff;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .btn:hover {
+      background: #0056cc;
+    }
+
+    /* Dark mode */
+    [data-theme="dark"] {
+      color: white;
+    }
+
+    [data-theme="dark"] .window {
+      background: rgba(50, 50, 50, 0.95);
+      color: white;
+    }
+
+    [data-theme="dark"] .window-header {
+      background: rgba(60, 60, 60, 0.9);
+    }
+
+    [data-theme="dark"] .window-title {
+      color: white;
+    }
+
+    [data-theme="dark"] .form-group input,
+    [data-theme="dark"] .form-group textarea {
+      background: rgba(70, 70, 70, 0.8);
+      border-color: #555;
+      color: white;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .dock {
+        bottom: 5px;
+        padding: 4px;
+        gap: 4px;
+      }
+
+      .dock-item {
+        width: 50px;
+        height: 50px;
+      }
+
+      .dock-item img {
+        width: 40px;
+        height: 40px;
+      }
+
+      .window {
+        width: 95% !important;
+        height: 80% !important;
+        left: 2.5% !important;
+        top: 10% !important;
+        transform: none !important;
+      }
+
+      .top-bar {
+        font-size: 12px;
+        padding: 0 10px;
+      }
+    }
+  </style>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <!-- Loading Screen -->
+  <div class="loading-screen" id="loadingScreen">
+    <div class="loading-content">
+      <img src="{% static 'portfolio/images/icons/apple/load.gif' %}" alt="Loading..." class="loading-gif">
+      <h2>Welcome to Suchit's Portfolio</h2>
+      <p>Loading macOS interface...</p>
+    </div>
+  </div>
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <img src="{% static 'portfolio/images/icons/apple/apple-logo-white.png' %}" alt="Apple" class="apple-logo">
+      <span>Finder</span>
+    </div>
+    <div class="top-bar-center">
+      <span id="currentTime"></span>
+    </div>
+    <div class="top-bar-right">
+      <span>🔋</span>
+      <span>📶</span>
+    </div>
+  </div>
+
+  <!-- Desktop -->
+  <div class="desktop">
+    {% block content %}
+    {% endblock %}
+
+    <!-- System Preferences Window -->
+    <div class="window system-preferences" id="systemPreferencesWindow">
+      <div class="window-header">
+        <div class="window-controls">
+          <div class="window-control close" onclick="closeWindow('systemPreferencesWindow')"></div>
+          <div class="window-control minimize"></div>
+          <div class="window-control maximize"></div>
+        </div>
+        <div class="window-title">System Preferences</div>
+      </div>
+      <div class="window-content">
+        <div class="pref-grid">
+          <div class="pref-item" onclick="toggleTheme()">
+            <div class="pref-icon">🎨</div>
+            <div>Theme</div>
+          </div>
+          <div class="pref-item" onclick="changeWallpaper()">
+            <div class="pref-icon">🖼️</div>
+            <div>Wallpaper</div>
+          </div>
+          <div class="pref-item">
+            <div class="pref-icon">🔊</div>
+            <div>Sound</div>
+          </div>
+          <div class="pref-item">
+            <div class="pref-icon">📱</div>
+            <div>Displays</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Terminal Window -->
+    <div class="window terminal" id="terminalWindow">
+      <div class="window-header">
+        <div class="window-controls">
+          <div class="window-control close" onclick="closeWindow('terminalWindow')"></div>
+          <div class="window-control minimize"></div>
+          <div class="window-control maximize"></div>
+        </div>
+        <div class="window-title">Terminal</div>
+      </div>
+      <div class="window-content terminal-content">
+        <div id="terminalOutput">
+          <div>Last login: $(date) on console</div>
+          <div>Welcome to Suchit's Portfolio Terminal</div>
+          <div>Type 'help' for available commands</div>
+        </div>
+        <div class="terminal-prompt">
+          <span>suchit@portfolio:~$ </span>
+          <input type="text" class="terminal-input" id="terminalInput" autocomplete="off">
+        </div>
+      </div>
+    </div>
+
+    <!-- Projects Window -->
+    <div class="window projects-window" id="projectsWindow">
+      <div class="window-header">
+        <div class="window-controls">
+          <div class="window-control close" onclick="closeWindow('projectsWindow')"></div>
+          <div class="window-control minimize"></div>
+          <div class="window-control maximize"></div>
+        </div>
+        <div class="window-title">My Projects</div>
+      </div>
+      <div class="window-content">
+        <iframe src="/projects/" style="width: 100%; height: 100%; border: none;"></iframe>
+      </div>
+    </div>
+
+    <!-- Contact Window -->
+    <div class="window contact-window" id="contactWindow">
+      <div class="window-header">
+        <div class="window-controls">
+          <div class="window-control close" onclick="closeWindow('contactWindow')"></div>
+          <div class="window-control minimize"></div>
+          <div class="window-control maximize"></div>
+        </div>
+        <div class="window-title">Contact Me</div>
+      </div>
+      <div class="window-content">
+        <iframe src="/contact/" style="width: 100%; height: 100%; border: none;"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dock -->
+  <div class="dock">
+    <div class="dock-item" onclick="openWindow('systemPreferencesWindow')" title="System Preferences">
+      <img src="{% static 'portfolio/images/icons/apps/about.png' %}" alt="System Preferences">
+    </div>
+    <div class="dock-item" onclick="openWindow('projectsWindow')" title="My Projects">
+      <img src="{% static 'portfolio/images/icons/apps/projects.png' %}" alt="Projects">
+    </div>
+    <div class="dock-item" onclick="openWindow('contactWindow')" title="Contact">
+      <img src="{% static 'portfolio/images/icons/apps/contact.png' %}" alt="Contact">
+    </div>
+    <div class="dock-item" onclick="openWindow('terminalWindow')" title="Terminal">
+      <img src="{% static 'portfolio/images/icons/apps/terminal.png' %}" alt="Terminal">
+    </div>
+    <div class="dock-item" onclick="window.open('https://github.com/suchitsharma2004', '_blank')" title="GitHub">
+      <img src="{% static 'portfolio/images/icons/apps/github.png' %}" alt="GitHub">
+    </div>
+  </div>
+
+  <script>
+    // Loading screen
+    window.addEventListener('load', function() {
+      setTimeout(() => {
+        document.getElementById('loadingScreen').style.display = 'none';
+      }, 3000);
+    });
+
+    // Time update
+    function updateTime() {
+      const now = new Date();
+      const timeString = now.toLocaleString('en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+      });
+      document.getElementById('currentTime').textContent = timeString;
+    }
+    setInterval(updateTime, 1000);
+    updateTime();
+
+    // Window management
+    function openWindow(windowId) {
+      document.getElementById(windowId).classList.add('active');
+    }
+
+    function closeWindow(windowId) {
+      document.getElementById(windowId).classList.remove('active');
+    }
+
+    // Theme toggle
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+    }
+
+    // Load saved theme
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+
+    // Wallpaper change
+    const wallpapers = [
+      '{% static "portfolio/images/wallpapers/wallpaper1-light.jpg" %}',
+      '{% static "portfolio/images/wallpapers/wallpaper1-dark.jpg" %}',
+      '{% static "portfolio/images/wallpapers/wallpaper2-light.jpg" %}',
+      '{% static "portfolio/images/wallpapers/wallpaper2-dark.jpg" %}'
+    ];
+    let currentWallpaper = 0;
+
+    function changeWallpaper() {
+      currentWallpaper = (currentWallpaper + 1) % wallpapers.length;
+      document.body.style.backgroundImage = `url(${wallpapers[currentWallpaper]})`;
+    }
+
+    // Terminal functionality
+    document.getElementById('terminalInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        const command = this.value.trim();
+        const output = document.getElementById('terminalOutput');
+        
+        output.innerHTML += `<div>suchit@portfolio:~$ ${command}</div>`;
+        
+        // Simple command responses
+        if (command === 'help') {
+          output.innerHTML += '<div>Available commands: help, about, projects, contact, clear</div>';
+        } else if (command === 'about') {
+          output.innerHTML += '<div>Suchit Sharma - Full Stack Developer</div>';
+        } else if (command === 'projects') {
+          output.innerHTML += '<div>Opening projects window...</div>';
+          openWindow('projectsWindow');
+        } else if (command === 'contact') {
+          output.innerHTML += '<div>Opening contact form...</div>';
+          openWindow('contactWindow');
+        } else if (command === 'clear') {
+          output.innerHTML = '<div>Welcome to Suchit\'s Portfolio Terminal</div><div>Type \'help\' for available commands</div>';
+        } else if (command) {
+          output.innerHTML += `<div>Command not found: ${command}</div>`;
+        }
+        
+        this.value = '';
+        output.scrollTop = output.scrollHeight;
+      }
+    });
+
+    // Make windows draggable
+    document.querySelectorAll('.window').forEach(window => {
+      const header = window.querySelector('.window-header');
+      let isDragging = false;
+      let currentX;
+      let currentY;
+      let initialX;
+      let initialY;
+
+      header.addEventListener('mousedown', dragStart);
+
+      function dragStart(e) {
+        if (e.target.classList.contains('window-control')) return;
+        
+        initialX = e.clientX - window.offsetLeft;
+        initialY = e.clientY - window.offsetTop;
+
+        if (e.target === header) {
+          isDragging = true;
+        }
+      }
+
+      document.addEventListener('mousemove', dragMove);
+      document.addEventListener('mouseup', dragEnd);
+
+      function dragMove(e) {
+        if (isDragging) {
+          e.preventDefault();
+          currentX = e.clientX - initialX;
+          currentY = e.clientY - initialY;
+
+          window.style.left = currentX + 'px';
+          window.style.top = currentY + 'px';
+        }
+      }
+
+      function dragEnd() {
+        isDragging = false;
+      }
+    });
+  </script>
+</body>
+</html>

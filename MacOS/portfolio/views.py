@@ -27,16 +27,16 @@ def simple_test(request):
 
 def home(request):
     try:
-        # Back to the full macOS interface
-        return render(request, 'portfolio/home.html')
+        # Use Vercel-optimized template with inline CSS
+        return render(request, 'portfolio/home_vercel.html')
     except Exception as e:
         # If main template fails, return error info for debugging
         return JsonResponse({
             'status': 'template_error',
             'error': str(e),
             'error_type': type(e).__name__,
-            'template': 'portfolio/home.html',
-            'message': 'Complex macOS template failed to render. Check static files or template syntax.'
+            'template': 'portfolio/home_vercel.html',
+            'message': 'Vercel-optimized macOS template failed to render.'
         }, status=500)
 
 def home_complex(request):
