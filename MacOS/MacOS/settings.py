@@ -28,6 +28,13 @@ except ImportError:
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Debug: Print environment variables on startup
+print(f"=== DJANGO STARTUP DEBUG ===")
+print(f"DEBUG env: {os.environ.get('DEBUG', 'NOT_SET')}")
+print(f"SECRET_KEY env: {os.environ.get('SECRET_KEY', 'NOT_SET')[:10]}...")
+print(f"ALLOWED_HOSTS env: {os.environ.get('ALLOWED_HOSTS', 'NOT_SET')}")
+print(f"============================")
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
@@ -37,7 +44,7 @@ SECRET_KEY = config('SECRET_KEY', default='woy*3e6#a#r1yqwr8c&0=rv7*q9#zqmo#^())
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='my-portfolio-suchitsharma2004s-projects.vercel.app,localhost,127.0.0.1', cast=lambda v: [s.strip() for s in v.split(',')])
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='my-portfolio-suchitsharma2004s-projects.vercel.app,suchitsharma.vercel.app,localhost,127.0.0.1', cast=lambda v: [s.strip() for s in v.split(',')])
 
 
 # Application definition
