@@ -3,13 +3,13 @@
 ## � Deployment Checklist
 
 ### 1. Files Added for Vercel Deployment
-- ✅ `vercel.json` - Vercel configuration
-- ✅ `build_files.sh` - Build script for static files
-- ✅ `requirements.txt` - Python dependencies
+- ✅ `vercel.json` - Vercel configuration (simplified)
+- ✅ `build_files.sh` - Simple build script  
+- ✅ `requirements.txt` - Python dependencies (includes whitenoise)
 - ✅ `.env.vercel.template` - Environment variables template (safe to commit)
 - ✅ `.env.production` - Your actual env file (in .gitignore - NOT committed)
-- ✅ Updated `settings.py` - Production settings
-- ✅ Updated `wsgi.py` - Vercel compatibility
+- ✅ Updated `settings.py` - Production settings with WhiteNoise
+- ✅ Updated `wsgi.py` - Vercel compatibility with static file handling
 
 ### 2. Environment Variables to Set in Vercel
 

@@ -44,4 +44,5 @@ db.sqlite3-journal
 # Deployment
 node_modules/
 .vercel
+staticfiles/
 staticfiles_build/
