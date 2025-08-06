@@ -701,25 +701,67 @@
         content: `
           <div class="app-header">
             <img src="{% static 'portfolio/images/icons/apps/projects.svg' %}" alt="Projects" class="app-icon">
-            <h4>Featured Projects</h4>
+            <h4 style="color: var(--text-primary);">Featured Projects</h4>
           </div>
           <div class="row">
             <div class="col-md-6 mb-4">
-              <div class="skill-card">
+              <div class="skill-card clickable-card" onclick="window.open('https://github.com/suchitsharma2004/SignSetu', '_blank')" style="cursor: pointer;">
                 <div class="skill-icon">
-                  <img src="{% static 'portfolio/images/icons/apps/projects.svg' %}" alt="E-Commerce" class="skill-svg">
+                  <img src="{% static 'portfolio/images/icons/apps/projects.svg' %}" alt="SignSetu" class="skill-svg">
                 </div>
-                <h5>E-Commerce Platform</h5>
-                <p class="text-muted small">Full-stack solution with React and Django</p>
+                <h5 style="color: var(--text-primary); font-weight: 600;">SignSetu - Indian Sign Language Detection</h5>
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">AI-powered software for ISL-to-text conversion, potentially benefiting 8M+ deaf children in India.</p>
+                <div class="d-flex gap-1 mb-2 flex-wrap justify-content-center">
+                  <span class="badge bg-warning text-dark">Python</span>
+                  <span class="badge bg-info">MediaPipe</span>
+                  <span class="badge bg-primary">OpenCV</span>
+                </div>
+                <small style="color: var(--text-secondary); font-style: italic;">Click to view on GitHub</small>
               </div>
             </div>
             <div class="col-md-6 mb-4">
-              <div class="skill-card">
+              <div class="skill-card clickable-card" onclick="window.open('https://github.com/suchitsharma2004/DermDetect', '_blank')" style="cursor: pointer;">
                 <div class="skill-icon">
-                  <img src="{% static 'portfolio/images/icons/apps/contact.svg' %}" alt="Task Manager" class="skill-svg">
+                  <img src="{% static 'portfolio/images/icons/apps/contact.svg' %}" alt="DermDetect" class="skill-svg">
                 </div>
-                <h5>Task Manager App</h5>
-                <p class="text-muted small">Mobile-first task management</p>
+                <h5 style="color: var(--text-primary); font-weight: 600;">DermDetect - Skin Disease Detection</h5>
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">Web platform with 97% accuracy in skin disease detection using advanced ML algorithms.</p>
+                <div class="d-flex gap-1 mb-2 flex-wrap justify-content-center">
+                  <span class="badge bg-warning text-dark">Python</span>
+                  <span class="badge bg-danger">TensorFlow</span>
+                  <span class="badge bg-primary">OpenCV</span>
+                </div>
+                <small style="color: var(--text-secondary); font-style: italic;">Click to view on GitHub</small>
+              </div>
+            </div>
+            <div class="col-md-6 mb-4">
+              <div class="skill-card clickable-card" onclick="window.open('https://github.com/suchitsharma2004/ChatApp', '_blank')" style="cursor: pointer;">
+                <div class="skill-icon">
+                  <img src="{% static 'portfolio/images/icons/apps/projects.svg' %}" alt="ChatApp" class="skill-svg">
+                </div>
+                <h5 style="color: var(--text-primary); font-weight: 600;">ChatApp - AI-Integrated Chat System</h5>
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">AI-powered chat and mail management system with LLaMA 3.2 integration for enhanced communication.</p>
+                <div class="d-flex gap-1 mb-2 flex-wrap justify-content-center">
+                  <span class="badge bg-success">Django</span>
+                  <span class="badge bg-info">Streamlit</span>
+                  <span class="badge bg-danger">LLaMA 3.2</span>
+                </div>
+                <small style="color: var(--text-secondary); font-style: italic;">Click to view on GitHub</small>
+              </div>
+            </div>
+            <div class="col-md-6 mb-4">
+              <div class="skill-card clickable-card" onclick="window.open('https://github.com/suchitsharma2004/My_portfolio', '_blank')" style="cursor: pointer;">
+                <div class="skill-icon">
+                  <img src="{% static 'portfolio/images/icons/apps/projects.svg' %}" alt="Portfolio" class="skill-svg">
+                </div>
+                <h5 style="color: var(--text-primary); font-weight: 600;">macOS Portfolio Website</h5>
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">Interactive portfolio with authentic macOS interface design and AI-powered terminal assistant.</p>
+                <div class="d-flex gap-1 mb-2 flex-wrap justify-content-center">
+                  <span class="badge bg-success">Django</span>
+                  <span class="badge bg-primary">JavaScript</span>
+                  <span class="badge bg-info">CSS3</span>
+                </div>
+                <small style="color: var(--text-secondary); font-style: italic;">Click to view on GitHub</small>
               </div>
             </div>
           </div>
@@ -924,10 +966,10 @@
           
         case 'projects':
           addTerminalLine('🚀 Featured Projects:', '#fff');
+          addTerminalLine('• SignSetu - AI-powered Indian Sign Language detection system', '#ccc');
+          addTerminalLine('• DermDetect - Skin disease detection with 97% ML accuracy', '#ccc');
+          addTerminalLine('• ChatApp - AI-integrated chat system with LLaMA 3.2', '#ccc');
           addTerminalLine('• macOS Portfolio - This interactive web experience', '#ccc');
-          addTerminalLine('• AI Chat Application - Real-time chat with ML models', '#ccc');
-          addTerminalLine('• E-commerce Platform - Full-stack Django application', '#ccc');
-          addTerminalLine('• Machine Learning Pipeline - Automated ML workflows', '#ccc');
           addTerminalLine('', '#ccc');
           addTerminalLine('💡 Ask me for more details about any project!', '#0ff');
           return true;

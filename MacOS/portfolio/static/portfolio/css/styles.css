@@ -540,6 +540,22 @@ body {
     transition: width 1s ease;
 }
 
+/* Clickable card styling for projects */
+.clickable-card {
+    transition: all 0.3s ease;
+    border: 1px solid var(--border-color);
+}
+
+.clickable-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    border-color: #007AFF;
+}
+
+.clickable-card:active {
+    transform: translateY(-2px);
+}
+
 /* Contact Form Enhancements */
 .form-control {
     border: 1px solid rgba(0, 0, 0, 0.1);
