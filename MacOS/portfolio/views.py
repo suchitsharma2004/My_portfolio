@@ -13,6 +13,18 @@ import os
 import time
 
 # Create your views here.
+@csrf_exempt
+def simple_test(request):
+    """Simple test view to check if Django is working"""
+    try:
+        return render(request, 'portfolio/simple_test.html')
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'error': str(e),
+            'message': 'Template rendering failed'
+        })
+
 def home(request):
     return render(request, 'portfolio/home.html')
 
@@ -271,12 +283,22 @@ def health_check(request):
         import django
         import os
         
+        # Get the actual host from the request
+        host = request.get_host()
+        
         health_data = {
             'status': 'healthy',
             'django_version': django.get_version(),
             'debug': settings.DEBUG,
             'secret_key_set': bool(settings.SECRET_KEY and settings.SECRET_KEY != 'django-insecure-sd#*z=82hs7i@==xd7nq9z*y9ag58c8v+kw=-nq^$e@&qc%^5#'),
             'allowed_hosts': settings.ALLOWED_HOSTS,
+            'current_host': host,
+            'host_allowed': host in settings.ALLOWED_HOSTS,
+            'request_info': {
+                'method': request.method,
+                'path': request.path,
+                'headers': dict(request.headers),
+            },
             'environment_vars': {
                 'DEBUG': os.environ.get('DEBUG', 'NOT_SET'),
                 'SECRET_KEY_SET': 'SECRET_KEY' in os.environ,

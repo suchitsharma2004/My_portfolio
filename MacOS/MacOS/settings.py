@@ -37,7 +37,7 @@ SECRET_KEY = config('SECRET_KEY', default='woy*3e6#a#r1yqwr8c&0=rv7*q9#zqmo#^())
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*.vercel.app,localhost,127.0.0.1', cast=lambda v: [s.strip() for s in v.split(',')])
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='my-portfolio-suchitsharma2004s-projects.vercel.app,localhost,127.0.0.1', cast=lambda v: [s.strip() for s in v.split(',')])
 
 
 # Application definition
