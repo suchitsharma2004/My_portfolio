@@ -26,7 +26,16 @@ def simple_test(request):
         })
 
 def home(request):
-    return render(request, 'portfolio/home.html')
+    try:
+        return render(request, 'portfolio/home.html')
+    except Exception as e:
+        # If main template fails, return error info
+        return JsonResponse({
+            'status': 'template_error',
+            'error': str(e),
+            'error_type': type(e).__name__,
+            'message': 'Main template failed to render. Check static files or template syntax.'
+        }, status=500)
 
 def projects(request):
     return render(request, 'portfolio/projects.html')

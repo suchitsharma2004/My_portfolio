@@ -150,12 +150,16 @@ try:
             "BACKEND": "django.core.files.storage.FileSystemStorage",
         },
         "staticfiles": {
-            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+            "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
         },
     }
-except Exception:
+except Exception as e:
+    print(f"STORAGES configuration failed: {e}")
     # Fallback for older Django or if WhiteNoise fails
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    try:
+        STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+    except Exception:
+        STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
 # Production settings for Vercel
 if not DEBUG:
